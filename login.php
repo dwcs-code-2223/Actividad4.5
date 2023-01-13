@@ -72,6 +72,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                         } else {
                             iniciarSesion();
                             $_SESSION["user"] = $user;
+                            $_SESSION["ultimoAcceso"]=time();                                    
                             header('Location: welcome.php');
                             exit;
                         }

@@ -36,6 +36,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                 } else {
                     ++$_SESSION["visitas"];
                 }
+                $_SESSION["ultimoAcceso"] = time();
                 echo $_SESSION["user"];
                 ?>!
             </h1>

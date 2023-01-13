@@ -1,5 +1,7 @@
 <?php
-ini_set("session.cookie_lifetime", "60");
+
+CONST MAX_SECONDS_INACTIVITY = 30;
+ini_set("session.cookie_lifetime", "600");
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
@@ -34,7 +36,21 @@ function cerrarSesion() {
 }
 
 function isUserLoggedIn() {
-    return $autenticado = iniciarSesion() && (session_status() === PHP_SESSION_ACTIVE) && isset($_SESSION["user"]);
+    $autenticado = iniciarSesion() && (session_status() === PHP_SESSION_ACTIVE) && isset($_SESSION["user"]);
+    return $autenticado && isUserActive();
+}
+
+function isUserActive(): bool {
+    $active = false;
+    $actual_time = time();
+    $diff = $actual_time - $_SESSION["ultimoAcceso"];
+    if ($diff < MAX_SECONDS_INACTIVITY) {
+        $active = true;
+    } else {
+        cerrarSesion();
+    }
+
+    return $active;
 }
 
 function iniciarSesion(): bool {
@@ -42,6 +58,6 @@ function iniciarSesion(): bool {
     if (session_status() !== PHP_SESSION_ACTIVE) {
         $iniciada = session_start();
     }
-    
+
     return $iniciada;
 }

@@ -2,6 +2,10 @@
 
 CONST MAX_SECONDS_INACTIVITY = 30;
 ini_set("session.cookie_lifetime", "600");
+
+const ADMIN_ROLE = "admin";
+const USER_ROLE = "user";
+$app_roles = [ADMIN_ROLE, USER_ROLE];
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
@@ -15,7 +19,8 @@ function existeUser(string $user, array $usuarios): bool {
 /* Orden 2 */
 
 function login(string $user, string $pwd, array $usuarios): bool {
-    return $usuarios[$user]["pwd"] === $pwd;
+    return password_verify($pwd, $usuarios[$user]["pwd"]);
+   
 }
 
 function cerrarSesion() {

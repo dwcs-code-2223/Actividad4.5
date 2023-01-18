@@ -1,5 +1,7 @@
-<?php ob_start();
-  require_once 'util.php';?>
+<?php
+ob_start();
+require_once 'util.php';
+?>
 <!DOCTYPE html>
 <!--
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -14,7 +16,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
     </head>
     <body>
         <?php
-        if(isUserLoggedIn()){
+        if (isUserLoggedIn()) {
             header("Location: welcome.php");
             exit;
         }
@@ -39,6 +41,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
 
                         </div>
 
+                        <!-- Current Password input -->
+                        <div class="form-group mb-4">
+                            <label class="form-label" for="rol">Seleccione el rol:</label>
+
+                            <select name="rol" id="rol" required>
+                                <?php foreach ($app_roles as $key => $value) { ?>
+
+
+                                    <option value="<?= $key ?>"> <?= $value ?> </option>
+                                <?php } ?>
+                            </select>              </div>
 
 
                         <!-- Submit button -->
@@ -48,10 +61,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                     </form>
 
                     <?php
-                  
+                    $pass_user1 = "abc123.";
+                    $password_hash = password_hash($pass_user1, PASSWORD_DEFAULT);
+                    echo $password_hash;
 
-                    $usuarios = array("user1@edu.es" => array("pwd" => "abc123.", "pwd-1" => "aBc123.", "pwd-2" => "abC123."),
-                        "user2@edu.es" => array("pwd" => "abc123.", "pwd-1" => "123aBc.", "pwd-2" => "123abC."));
+                    $usuarios = array("user1@edu.es" =>
+                        array("pwd" => $password_hash, "pwd-1" => "aBc123.", "pwd-2" => "abC123.", "roles" => [ADMIN_ROLE, USER_ROLE]),
+                        "user2@edu.es" => array("pwd" => $password_hash, "pwd-1" => "123aBc.", "pwd-2" => "123abC.", "roles" => [USER_ROLE]));
 
                     const USER_DOES_NOT_EXIST = "No existe usuario";
                     const PWD_INCORRECT = "La contraseña no es correcta";
@@ -72,7 +88,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                         } else {
                             iniciarSesion();
                             $_SESSION["user"] = $user;
-                            $_SESSION["ultimoAcceso"]=time();                                    
+                            $_SESSION["ultimoAcceso"] = time();
                             header('Location: welcome.php');
                             exit;
                         }

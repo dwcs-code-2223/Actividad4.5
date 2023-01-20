@@ -71,21 +71,27 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
 
                     const USER_DOES_NOT_EXIST = "No existe usuario";
                     const PWD_INCORRECT = "La contraseña no es correcta";
+                    const ROLE_PROBLEM ="No es posible iniciar sesión";
 
                     $exito = false;
 
                     $errors = array();
                     $user = "";
 
-                    if (isset($_POST["email"]) && isset($_POST["pwd"])) {
+                    if (isset($_POST["email"]) && isset($_POST["pwd"]) && isset($_POST["rol"])) {
                         $user = $_POST["email"];
                         $pwd = $_POST["pwd"];
+                        $rolId = (int) $_POST["rol"];
 
                         if (!existeUser($user, $usuarios)) {
                             array_push($errors, PWD_INCORRECT . " o " . USER_DOES_NOT_EXIST);
                         } elseif (!login($user, $pwd, $usuarios)) {
                             array_push($errors, PWD_INCORRECT . " o " . USER_DOES_NOT_EXIST);
-                        } else {
+                        } 
+                        elseif(!isUserInRoleId($user, $rolId, $usuarios)){
+                              array_push($errors,ROLE_PROBLEM);
+                        }
+                        else {
                             iniciarSesion();
                             $_SESSION["user"] = $user;
                             $_SESSION["ultimoAcceso"] = time();

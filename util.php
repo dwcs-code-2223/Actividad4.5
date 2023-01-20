@@ -66,3 +66,11 @@ function iniciarSesion(): bool {
 
     return $iniciada;
 }
+
+function isUserInRoleId(string $user, int $roleId, array $usuarios){
+    global $app_roles;
+    $roleName = $app_roles[$roleId];
+    
+    $resultado= in_array($roleName, $usuarios[$user]["roles"]);
+    return $resultado;
+}

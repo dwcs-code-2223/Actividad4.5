@@ -17,7 +17,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
     <body>
         <?php
         if (isUserLoggedIn()) {
-            header("Location: welcome.php");
+           redirectToNextPage();
             exit;
         }
         ?>
@@ -61,6 +61,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                     </form>
 
                     <?php
+
+                    function redirectToNextPage() {
+                        global $app_roles;
+                        $roleId = $_SESSION["roleId"];
+                        if ($app_roles[$roleId] == ADMIN_ROLE) {
+                            header('Location: admin.php');
+                        } elseif ($app_roles[$roleId] == USER_ROLE) {
+                            header('Location: welcome.php');
+                        }
+                    }
+
                     $pass_user1 = "abc123.";
                     $password_hash = password_hash($pass_user1, PASSWORD_DEFAULT);
                     echo $password_hash;
@@ -71,7 +82,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
 
                     const USER_DOES_NOT_EXIST = "No existe usuario";
                     const PWD_INCORRECT = "La contraseña no es correcta";
-                    const ROLE_PROBLEM ="No es posible iniciar sesión";
+                    const ROLE_PROBLEM = "No es posible iniciar sesión";
 
                     $exito = false;
 
@@ -87,15 +98,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                             array_push($errors, PWD_INCORRECT . " o " . USER_DOES_NOT_EXIST);
                         } elseif (!login($user, $pwd, $usuarios)) {
                             array_push($errors, PWD_INCORRECT . " o " . USER_DOES_NOT_EXIST);
-                        } 
-                        elseif(!isUserInRoleId($user, $rolId, $usuarios)){
-                              array_push($errors,ROLE_PROBLEM);
-                        }
-                        else {
+                        } elseif (!isUserInRoleId($user, $rolId, $usuarios)) {
+                            array_push($errors, ROLE_PROBLEM);
+                        } else {
                             iniciarSesion();
                             $_SESSION["user"] = $user;
                             $_SESSION["ultimoAcceso"] = time();
-                            header('Location: welcome.php');
+                            $_SESSION["roleId"] = $rolId;
+
+                            redirectToNextPage();
                             exit;
                         }
                     }
@@ -104,22 +115,22 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
 
                     <?php if (count($errors) > 0) { ?>
                         <div class="alert alert-danger" role="alert">
-                            <?php
-                            foreach ($errors as $error) {
-                                echo $error . "<br/>";
-                            }
-                            ?>
+                        <?php
+                        foreach ($errors as $error) {
+                            echo $error . "<br/>";
+                        }
+                        ?>
                         </div>
-                    <?php } ?>
+                        <?php } ?>
 
                     <?php if ($exito) { ?>
                         <div class="alert alert-success" role="alert">
                             Se ha actualizado correctamente la contraseña <?php print_r($usuarios[$user]) ?>
                         </div>
-                        <?php
-                    }
-                    ob_end_flush();
-                    ?>
+    <?php
+}
+ob_end_flush();
+?>
                 </div>
             </div>
         </div>

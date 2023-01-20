@@ -1,6 +1,6 @@
 <?php
 
-CONST MAX_SECONDS_INACTIVITY = 30;
+CONST MAX_SECONDS_INACTIVITY = 600;
 ini_set("session.cookie_lifetime", "600");
 
 const ADMIN_ROLE = "admin";
@@ -20,7 +20,6 @@ function existeUser(string $user, array $usuarios): bool {
 
 function login(string $user, string $pwd, array $usuarios): bool {
     return password_verify($pwd, $usuarios[$user]["pwd"]);
-   
 }
 
 function cerrarSesion() {
@@ -67,10 +66,17 @@ function iniciarSesion(): bool {
     return $iniciada;
 }
 
-function isUserInRoleId(string $user, int $roleId, array $usuarios){
+function isUserInRoleId(string $user, int $roleId, array $usuarios) {
     global $app_roles;
     $roleName = $app_roles[$roleId];
-    
-    $resultado= in_array($roleName, $usuarios[$user]["roles"]);
+
+    $resultado = in_array($roleName, $usuarios[$user]["roles"]);
     return $resultado;
+}
+
+function isUserAllowedInPage(array $page_roles):bool {
+    global $app_roles;
+    $roleId = $_SESSION["roleId"];
+    $roleName = $app_roles[$roleId];
+    return in_array($roleName, $page_roles);
 }

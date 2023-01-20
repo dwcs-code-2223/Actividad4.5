@@ -1,8 +1,16 @@
 <?php
 ob_start();
-
 require_once 'util.php';
-if (!isUserLoggedIn()) {
+$allowed_roles = [ADMIN_ROLE, USER_ROLE];
+
+
+
+
+if (!isUserLoggedIn() || !isUserAllowedInPage($allowed_roles)) {
+     //Podría cerrarse sesión o en el caso de que la sesión estuviese activa
+    //, pero el rol no fuese el correcto, reenviar a una página de recurso no permitido
+    
+    cerrarSesion();
     header("Location: login.php");
     exit;
 }
